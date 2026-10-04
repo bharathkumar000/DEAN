@@ -1,0 +1,126 @@
+================================================================================
+🛠️ RESQLINK — TECHNICAL STACK & FUNCTIONAL MATRIX
+================================================================================
+File: docs/tech_stack.txt
+Author: AI Assistant
+Date: August 2026
+Purpose: Comprehensive summary of all frameworks, libraries, modules, and 
+         protocols utilized across the Web Command, Mobile, and IoT layers.
+================================================================================
+
+--------------------------------------------------------------------------------
+1. 🌐 WEB COMMAND CENTER (Next.js Dashboard)
+--------------------------------------------------------------------------------
+This is the central administration desk used by dispatchers to review sensor 
+telemetry, verify out-of-region SOS signals, triage requests using AI, and 
+delegate rescue teams.
+
+* Next.js (v16.2.6)
+  - Function: Core Full-Stack Framework. Handles both client-side rendering 
+    (React) and server-side API routes (/api/requests, /api/broadcasts, etc.).
+  - Why: Provides high-speed Turbopack compilation and file-system routing.
+
+* React (v19.2)
+  - Function: Declarative UI component library. Manages local state (toggles, 
+    verification modals, input fields) and side-effects (e.g., GPS access, 
+    WebSocket events).
+
+* Vanilla CSS
+  - Function: System-wide styles using custom HSL properties (CSS variables).
+  - Why: Delivers maximum performance and smooth transition micro-animations 
+    without Tailwind or third-party overhead. Handles Light/Dark mode.
+
+* Leaflet.js (v1.9.4) & OpenStreetMap
+  - Function: Interactive Mapping. Renders maps, places custom pins for 
+    verified/unverified signals, draws circle ranges for validation zones, 
+    and handles route rendering.
+
+* Supabase JS Client SDK
+  - Function: Real-time DB listeners. Subscribes to PostgreSQL database 
+    channel (sensor_logs) to automatically push incoming ESP32 updates directly 
+    to the UI via WebSockets.
+
+* Project OSRM API (Open Source Routing Machine)
+  - Function: Navigation. Computes optimal driving paths, distance, and 
+    estimated arrival times (ETA) from headquarters to rescue points.
+
+* Groq Cloud LLM API (Llama-3.3-70b-versatile)
+  - Function: Cognitive analysis. Analyzes raw emergency text, extracts names/
+    needs/counts, assigns a priority level, and drafts situation summaries.
+
+* OpenWeatherMap API
+  - Function: Real-time meteorological feeds. Injects current weather conditions 
+    into the map UI.
+
+--------------------------------------------------------------------------------
+2. 📱 MOBILE CLIENT (Flutter App)
+--------------------------------------------------------------------------------
+The field application used by citizens and rescue groups. Operates without 
+cellular coverage using peer-to-peer networks.
+
+* Flutter SDK (3.x) & Dart (3.x)
+  - Function: Cross-platform engine. Compiles code to high-speed native 
+    assembler code (ARM64) for mobile devices.
+
+* Google Nearby Connections (v4.3.0)
+  - Function: Offline ad-hoc mesh. Utilizes Bluetooth Low Energy (BLE) for 
+    discovery and Wi-Fi Direct/Hotspots to transmit SOS packets locally.
+  - Strategy: P2P_CLUSTER.
+
+* Hive NoSQL DB (v2.2.3)
+  - Function: Lightweight offline persistence. Caches SOS requests, volunteer 
+    registries, and system preferences on device storage.
+
+* Geolocator
+  - Function: Location Services. Directly accesses hardware GPS sensors to 
+    capture precise device coordinates (publisher location).
+
+* Flutter Map & LatLong2
+  - Function: Offline map tiling. Renders pre-cached regional map packages 
+    (up to 24.5 MB) so rescue personnel can navigate without internet.
+
+* HTTP Client
+  - Function: Web Sync Bridge. Automatically forwards accumulated offline SOS 
+    records to the command server when an active backhaul is detected.
+
+* MethodChannel API (Dart ↔ Android Kotlin)
+  - Function: Native OS integration bridge. Connects Flutter buttons to Android's 
+    telephony APIs.
+
+* Kotlin (Android Native Core)
+  - Function: Rebuilt SMS Portal integration. Launches a background Android 
+    Intent targeting pre-defined emergency gate numbers (+91 XXXXXXXXXX) with 
+    automated emergency templates.
+
+--------------------------------------------------------------------------------
+3. 🔌 IoT SENSOR STATIONS (ESP32 Firmware)
+--------------------------------------------------------------------------------
+Hardware nodes deployed in active disaster areas to detect structural tremors, 
+rising water levels, and rainfall parameters.
+
+* ESP32 DevKit V1 (Tensilica Xtensa Dual-Core CPU)
+  - Function: Processing and communications core. Manages Wi-Fi/Bluetooth 
+    handshakes and ADC sensor polling.
+
+* Arduino C++ Core
+  - Function: Firmware compiler environment. Handles hardware interrupts, I2C 
+    buses, and hardware serial loops.
+
+* UniversalTelegramBot Library
+  - Function: Emergency messaging. Pushes warning messages to Telegram 
+    channels and processes remote commands (e.g., /status request).
+
+* ArduinoJson Library
+  - Function: Serialization. Formats readings (floods, rain, tremors) into 
+    lightweight JSON payloads for API transmission.
+
+* HTTPClient & WiFiClientSecure
+  - Function: Secure cloud syncing. Initiates SSL/TLS socket connections to 
+    upload logs directly to Supabase over HTTPS.
+
+* Sensor Interfaces:
+  - MPU6050 Library: Reads acceleration vectors (vector magnitude v > 15.0 m/s²) 
+    for earthquake monitoring.
+  - DHT11 Library: Captures relative humidity and temperature.
+  - Analog GPIOs: Read raw ADC values (0 - 4095) for water parallel lines, 
+    soil moisture probes, and rain gauges.

@@ -1,0 +1,102 @@
+# 💻 ResQLink — Technical Architecture
+
+This document outlines the detailed software frameworks, protocols, API definitions, and data models of the ResQLink platform.
+
+---
+
+## 🛠️ 1. Software Stack Overview
+
+| Layer | Component | Technologies |
+|:---|:---|:---|
+| **Web Dashboard** | Frontend / Backend | Next.js 16.2.6 (React 19.2), Vanilla CSS, Leaflet.js 1.9.4 |
+| **Mobile Client** | Application Core | Flutter SDK 3.x, Dart 3.x, Hive NoSQL DB, MethodChannel (Kotlin) |
+| **IoT Node** | Firmware Engine | Arduino C/C++ core, ESP32 DevKit V1 |
+| **Cloud Backhaul** | Database & Messaging | Supabase PostgreSQL, Telegram Bot API, Groq LLM API |
+
+---
+
+## 🗄️ 2. Database Models & Schema Definitions
+
+### 2.1. Web Server Local JSON Database (`web/data/requests.json`)
+The local database handles de-duplicated SOS requests synced from the mobile mesh network:
+```json
+[
+  {
+    "id": "uuid-v4-string",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "location": "Lat: 12.3456, Lng: 76.7890",
+    "people": 3,
+    "need": "Medical Aid",
+    "status": "CREATED",
+    "timestamp": "ISO-8601-Timestamp",
+    "verified": false,
+    "publisherLocation": "Lat: 12.3456, Lng: 76.7890"
+  }
+]
+```
+
+### 2.2. Supabase Cloud Database (`sensor_logs` Table)
+Stores real-time telemetry from physical ESP32 sensor stations:
+```sql
+CREATE TABLE sensor_logs (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    temperature REAL,
+    humidity REAL,
+    soil_moisture REAL,
+    water_level REAL,
+    seismic REAL,
+    rain_level REAL,
+    status TEXT
+);
+```
+
+### 2.3. Mobile Client NoSQL Database (Hive Box `sos_box`)
+Caches distress beacons on the local phone memory:
+- **Key**: SOS UUID (`String`)
+- **Value**: Binary Adapter Map (`SOSAdapter`) containing:
+  - `id` (`String`)
+  - `name` (`String`)
+  - `phone` (`String`)
+  - `location` (`String`)
+  - `people` (`int`)
+  - `need` (`String`)
+  - `status` (`String` - `CREATED`, `RELAY_ACCEPTED`, `DISPATCHED`, `COMPLETED`)
+  - `timestamp` (`String`)
+
+---
+
+## 🌐 3. Web API Endpoint Matrix
+
+All endpoints reside in the `web/src/app/api/` folder and communicate in JSON:
+
+### 3.1. `GET /api/requests`
+- **Description**: Returns all rescue requests stored in the local system.
+- **Response**: Array of SOS JSON objects.
+
+### 3.2. `POST /api/requests`
+- **Description**: Creates or updates a rescue request. Handles deduplication by ID.
+- **Request Body**: Single SOS JSON object.
+
+### 3.3. `POST /api/broadcasts`
+- **Description**: Sends a broadcast or status update to the local feed.
+
+### 3.4. `POST /api/ai-summary`
+- **Description**: Receives a snapshot of active telemetry and queries Groq's Llama-3.3-70b model to generate structural summaries.
+- **Request Body**: `{ "requests": [...], "telemetry": [...] }`
+- **Response**: `{ "summary": "Markdown text" }`
+
+### 3.5. `POST /api/ai-triage`
+- **Description**: Automatically determines emergency priority based on distress parameters.
+
+### 3.6. `POST /api/sms`
+- **Description**: Server-side fallback webhook interface to queue SMS messaging.
+
+---
+
+## 🔌 4. MethodChannel Integration Protocol
+To run native Android actions from Flutter without external dependencies, we use a MethodChannel:
+- **Channel Identifier**: `com.resqlink.sms`
+- **Method Calls**:
+  - `sendSMS(number: String, message: String)`: Instantiates an `Intent.ACTION_SENDTO` to direct flow to the native Android SMS client with pre-filled parameters.

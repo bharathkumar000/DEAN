@@ -1,0 +1,67 @@
+# =============================================================
+# RESQLINK — Monorepo .gitignore
+# =============================================================
+
+# --- Web (Next.js) ---
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+web/.env*
+!web/.env.example
+web/coverage/
+web/.pnp
+web/.pnp.*
+web/.yarn/*
+!web/.yarn/patches
+!web/.yarn/plugins
+!web/.yarn/releases
+!web/.yarn/versions
+
+# --- Mobile (Flutter) ---
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/.idea/
+mobile/*.iml
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/app/google-services.json
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+mobile/ios/Runner/GeneratedPluginRegistrant.*
+mobile/.metadata
+
+# --- Hardware (ESP32 firmware) ---
+hardware/*.o
+hardware/*.elf
+hardware/*.hex
+hardware/.pio/
+
+# --- Releases ---
+# Keep APK files tracked (they are distributable builds)
+# releases/*.apk
+
+# --- Global ---
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+Thumbs.db
+
+# --- Root-level env (legacy — moved to web/) ---
+/.env*
+!**/.env.example
+node_modules
+.next/

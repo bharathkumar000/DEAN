@@ -1,0 +1,299 @@
+================================================================================
+🖥️ RESQLINK — 20-SLIDE PRESENTATION BLUEPRINT
+================================================================================
+File: docs/presentation_slides.txt
+Author: AI Assistant
+Date: August 2026
+Purpose: Presentation content for ResQLink Disaster Response System
+================================================================================
+
+--------------------------------------------------------------------------------
+SLIDE 1: Title Slide — Welcome to ResQLink
+--------------------------------------------------------------------------------
+[Visual Layout]: 
+Dark theme slide with a modern, glowing teal-green logo. Title is in a bold sans-serif font, accompanied by a small subtitle and clean iconography (map pin, radar beacon).
+
+[Slide Content]:
+* Project Name: ResQLink
+* Subtitle: Intelligent Multi-Platform Disaster Response & Offline Telemetry Network
+* Core Platforms: Web Command Center | Offline Mobile App | IoT Mesh Sensor Nodes
+
+[Presenter Notes]:
+"Good morning/afternoon, everyone. Welcome to the presentation of ResQLink, a unified disaster response system designed to keep communities connected and coordinate rescue efforts when traditional communications go down."
+
+--------------------------------------------------------------------------------
+SLIDE 2: The Problem — Communication Breakdowns in Disasters
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Split-screen design: Left side shows key bullet points; Right side shows a diagram illustrating a broken power grid and cell tower outages.
+
+[Slide Content]:
+* Grid Failures: Natural disasters (floods, earthquakes, landslides) disable power grids and cellular base stations.
+* Information Gaps: Rescue personnel lack real-time data from affected areas.
+* False Alarms: Unverified alerts waste limited rescue resources.
+
+[Presenter Notes]:
+"During major disasters, the first things to fail are power grids and communication lines. Without data, rescue efforts are slowed, and unverified reports can draw resources away from areas that need them most."
+
+--------------------------------------------------------------------------------
+SLIDE 3: The Solution — The ResQLink Ecosystem
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A three-column block layout illustrating the components of the ResQLink ecosystem: IoT Sensor Nodes, Offline Mobile Mesh, and Web Command Dashboard.
+
+[Slide Content]:
+* IoT Sensor Nodes: Low-power ESP32 stations monitoring hazards in the field.
+* Offline Mobile Mesh: P2P Bluetooth/WiFi multi-hop ad-hoc network for SOS alerts.
+* Web Command Dashboard: Next.js hub with AI triage and resource dispatching.
+
+[Presenter Notes]:
+"ResQLink addresses these challenges with a three-part ecosystem: low-cost IoT nodes that monitor conditions, an offline-capable mobile app that relays distress signals, and a centralized web dashboard to verify and manage response efforts."
+
+--------------------------------------------------------------------------------
+SLIDE 4: High-Level System Architecture
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A diagram showing the flow of data across the platform, from field sensors and mobile devices to the web dashboard and cloud database.
+
+[Slide Content]:
+* Tier 1 (Field): ESP32 nodes capture and process sensor readings locally.
+* Tier 2 (Local App): Flutter devices relay SOS alerts via ad-hoc P2P mesh.
+* Tier 3 (Local DB): API servers store requests in local deduplicated files.
+* Tier 4 (Dashboard): Next.js web application displays telemetry and map data.
+* Tier 5 (Cloud Services): Supabase real-time database, Groq LLM, and Telegram Bot API.
+
+[Presenter Notes]:
+"This 5-tier architecture is designed to handle different network environments. It keeps communications local when offline, and automatically syncs data to the cloud as soon as a connection is restored."
+
+--------------------------------------------------------------------------------
+SLIDE 5: Web Command Center (Next.js Dashboard)
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Screenshot of the dark-themed web dashboard with live charts, interactive maps, and active verification lists.
+
+[Slide Content]:
+* Framework: Built on Next.js 16.2 with React 19.
+* Real-Time Logs: Telemetry dashboard updates automatically using Supabase subscriptions.
+* Interface: Layout adjusts dynamically to display incoming alerts, safety thresholds, and volunteer assignments.
+
+[Presenter Notes]:
+"The web dashboard is the main command hub for dispatchers. Built with Next.js, it displays real-time telemetry from field sensors and handles incoming rescue requests."
+
+--------------------------------------------------------------------------------
+SLIDE 6: Tactical Map Engine & Routing
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Interactive map screenshot showing active incidents, base stations, and calculated rescue routes.
+
+[Slide Content]:
+* Map Framework: Leaflet.js rendering OpenStreetMap tiles.
+* Dynamic Routing: Project OSRM calculates optimal routes to incident coordinates.
+* Color-Coded Markers:
+  - Blue: HQ Base Station Radar
+  - Red: Active Verified Incidents
+  - Orange: Unverified Out-of-Region alerts
+  - Green: Resolved Alerts
+
+[Presenter Notes]:
+"We integrate Leaflet.js and Project OSRM to map and route rescue teams. Incidents are color-coded by status to give dispatchers a clear overview of the situation."
+
+--------------------------------------------------------------------------------
+SLIDE 7: Intelligent AI Triage & Prioritization
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A diagram showing how incoming text alerts are processed, analyzed by AI, and classified into priority levels.
+
+[Slide Content]:
+* Custom Algorithm: Priority Score = (Resource Weight x 1.5) + (Stranded Count x 2.0).
+* LLM Triage: Next.js routes data to Groq's Llama-3.3-70b-versatile API.
+* AI Output: Summarizes conditions, extracts resource needs, and assigns priority levels.
+
+[Presenter Notes]:
+"To help manage large volumes of alerts, the system uses a custom scoring algorithm combined with LLM analysis via the Groq API. This automatically flags critical situations for immediate response."
+
+--------------------------------------------------------------------------------
+SLIDE 8: Localization & Bilingual Support
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Side-by-side comparison of the user interface in English and Kannada (ಕನ್ನಡ).
+
+[Slide Content]:
+* Dual-Language Interface: Instantly toggles between English and Kannada.
+* Complete Localization: Translates alerts, telemetry logs, triage details, and priority levels.
+* Accessibility: Designed to support regional rescue personnel.
+
+[Presenter Notes]:
+"To ensure the platform is accessible to local responders, we built translation support directly into the client-side UI, allowing users to toggle between English and Kannada instantly."
+
+--------------------------------------------------------------------------------
+SLIDE 9: Verification Section (Fraud Prevention)
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A workflow diagram showing how out-of-region alerts are flagged, verified, and updated on the dashboard.
+
+[Slide Content]:
+* Location Checks: Compares the sender's location with the affected zone coordinates.
+* Verification Queue: Alerts submitted from outside the disaster radius are sent to 'Other Locations'.
+* Verification Step: Administrators verify alerts (e.g. by phone) before promoting them to the active rescue queue.
+
+[Presenter Notes]:
+"To prevent false reports from drawing resources away from affected zones, alerts sent from outside the disaster area are sent to a verification queue. Administrators can confirm details before dispatching teams."
+
+--------------------------------------------------------------------------------
+SLIDE 10: Mobile Application Overview (Flutter App)
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Mockups of the Flutter mobile app showing the login page, victim dashboard, and tactical map screen.
+
+[Slide Content]:
+* Framework: Cross-platform Flutter engine running on Android devices.
+* Offline Operation: Designed to work without cellular data or internet access.
+* Databases: Hive NoSQL database caches distress beacons and settings locally.
+
+[Presenter Notes]:
+"The mobile app is built with Flutter, allowing it to run on standard Android devices. It's designed to operate fully offline, storing all data locally until a network connection is available."
+
+--------------------------------------------------------------------------------
+SLIDE 11: P2P Multi-Hop Mobile Mesh Network
+--------------------------------------------------------------------------------
+[Visual Layout]:
+An animation or diagram showing how an alert hops from a victim's phone to a volunteer's phone, and finally to Command HQ.
+
+[Slide Content]:
+* Framework: Google Nearby Connections API utilizing Bluetooth and Wi-Fi Direct.
+* Mode: Strategy.P2P_CLUSTER for ad-hoc mesh networks.
+* Data Duplication: Local Hive boxes index unique UUIDs to prevent redundant transmissions.
+
+[Presenter Notes]:
+"The app uses Google Nearby Connections to build ad-hoc mesh networks over Bluetooth and Wi-Fi. Alerts hop from device to device until they reach a node with internet access."
+
+--------------------------------------------------------------------------------
+SLIDE 12: Legacy SMS MethodChannel Integration
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Screenshot of the SMS portal UI in the mobile app, alongside a diagram showing the MethodChannel bridge to the Android OS.
+
+[Slide Content]:
+* Direct Gateway: Rebuilt SMS portal targeting the emergency number +91 XXXXXXXXXX.
+* Native Bridge: Flutter MethodChannel (`com.resqlink.sms`) triggers Android intents.
+* Preset Templates: Features quick-select messages for medical, evacuation, and supply needs.
+
+[Presenter Notes]:
+"When mesh connections aren't available but legacy cellular service is, users can send alerts through the app's built-in SMS portal. It uses a MethodChannel to pre-fill templates and target the emergency response gateway."
+
+--------------------------------------------------------------------------------
+SLIDE 13: Hardware Tier (ESP32 Sensor Stations)
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Photo of the physical ESP32 sensor station prototype, listing its weather-resistant enclosure and solar power setup.
+
+[Slide Content]:
+* Core MCU: ESP32 DevKit V1 with built-in Wi-Fi and Bluetooth.
+* Deployment: Designed for solar-powered operation in remote areas.
+* Data Transmission: Uploads data via HTTP REST to Supabase, with Telegram fallback.
+
+[Presenter Notes]:
+"The hardware tier consists of solar-powered ESP32 sensor stations deployed in the field. These nodes collect environmental data and upload it to our database or send alerts directly via Telegram."
+
+--------------------------------------------------------------------------------
+SLIDE 14: ESP32 Sensor Array & Pinout Details
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A schematic diagram of the ESP32 showing pin connections to the sensor array.
+
+[Slide Content]:
+* Temperature & Humidity: DHT11 (GPIO 14).
+* Seismic Motion: MPU6050 Accelerometer (GPIO 21/22 - I2C).
+* Water Level: Parallel resistive sensor (GPIO 34 - Analog).
+* Soil Moisture: Resistive probe (GPIO 35 - Analog).
+* Rainfall Intensity: Inverted rain gauge (GPIO 33 - Analog).
+
+[Presenter Notes]:
+"We configure the ESP32 with a multi-sensor array to track temperature, humidity, seismic movement, water levels, and rainfall. Pin configurations are optimized to ensure stable operation during boot."
+
+--------------------------------------------------------------------------------
+SLIDE 15: Adaptive Power Throttling Algorithm
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A flowchart showing how the ESP32 switches between active (5s) and idle (30s) sleep intervals based on sensor activity.
+
+[Slide Content]:
+* Power Constraint: Field stations run on solar-charged battery systems.
+* Hysteresis Checking: Sensors are polled regularly and compared with baseline readings.
+* Active Mode (5s): Triggered by environmental changes or threshold violations.
+* Sleep Mode (30s): Standard interval when sensor readings remain stable.
+
+[Presenter Notes]:
+"To extend battery life, the ESP32 firmware uses an adaptive throttling algorithm. The node sleeps for 30-second intervals when conditions are stable, but switches to 5-second polling when changes are detected."
+
+--------------------------------------------------------------------------------
+SLIDE 16: Cloud Integration (Supabase Realtime)
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Diagram showing database logs updating live indicators and charts on the web dashboard.
+
+[Slide Content]:
+* Central DB: Supabase PostgreSQL stores all historical telemetry.
+* Live Subscriptions: Next.js subscribes to database changes over WebSockets.
+* Telemetry Logs: Displays live trends for temperature, humidity, water levels, and seismic activity.
+
+[Presenter Notes]:
+"On the cloud side, Supabase PostgreSQL handles database operations. The Next.js dashboard uses WebSocket subscriptions to display real-time sensor updates as they are logged."
+
+--------------------------------------------------------------------------------
+SLIDE 17: Challenges Solved: GPS Permission Errors
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Side-by-side view showing a browser console error compared to our warning handler.
+
+[Slide Content]:
+* Challenge: Blocked GPS permissions caused Next.js to crash during development.
+* Root Cause: Geolocation API errors were handled with standard `console.error` calls.
+* Solution: Implemented `console.warn` loggers and added fallback UI states (denied/pending) to maintain app stability.
+
+[Presenter Notes]:
+"One of the challenges we resolved was handling blocked GPS permissions. By replacing standard console error calls with warning logs and fallbacks, we kept the application running smoothly even when location access was denied."
+
+--------------------------------------------------------------------------------
+SLIDE 18: Challenges Solved: Alert Validation & Filtering
+--------------------------------------------------------------------------------
+[Visual Layout]:
+Flowchart showing how alerts are parsed, compared against configured boundaries, and routed.
+
+[Slide Content]:
+* Challenge: Filtering out false alarms sent from outside the affected area.
+* Solution: Implemented a dual coordinate model to compare sender coordinates with the disaster radius (1km - 5km).
+* Result: Automatically flags out-of-region alerts and routes them to a verification queue.
+
+[Presenter Notes]:
+"We also solved the issue of false alarms by implementing a dual-coordinate check. The system automatically flags alerts sent from outside the configured disaster area and sends them to a verification queue for review."
+
+--------------------------------------------------------------------------------
+SLIDE 19: Performance Metrics & Operational Limits
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A clean table displaying the key performance metrics of the ResQLink platform.
+
+[Slide Content]:
+* Telemetry Intervals: Active 5s loop | Idle 30s loop
+* Verification Bounds: Configurable 1km to 5km radius
+* Offline Cache Size: 24.5 MB sector maps
+* Transmission Latency: Under 10 seconds over a 3-hop mesh network
+* Target SMS Gateway: +91 XXXXXXXXXX
+
+[Presenter Notes]:
+"Here is a summary of the performance metrics of the platform. Key limits include a 5-second active telemetry loop, configurable 1km to 5km verification zones, and a local offline map cache of 24.5 Megabytes."
+
+--------------------------------------------------------------------------------
+SLIDE 20: Future Scope & Conclusion
+--------------------------------------------------------------------------------
+[Visual Layout]:
+A summary slide with icons for solar power, satellite links, and mobile deployments.
+
+[Slide Content]:
+* Hardware Expansion: Integrate solar-powered LoRa transceivers for long-range mesh routing.
+* UI Enhancements: Add detailed offline routing maps and additional language translations.
+* Summary: ResQLink provides a reliable, multi-tier communication framework to support emergency personnel during disaster events.
+
+[Presenter Notes]:
+"In conclusion, ResQLink offers a modular, resilient communication system for disaster zones. Moving forward, we plan to integrate LoRa transceivers to extend our range and add more local languages to our UI. Thank you."
