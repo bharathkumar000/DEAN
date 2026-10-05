@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
 #include <DHT.h>
@@ -10,8 +11,6 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <TinyGPS++.h>
-#include <SPI.h>
-#include <LoRa.h>  // LoRa Library support for off-grid mesh
 
 // ================== Pin Definitions ==================
 #define DHTPIN 14           
@@ -30,25 +29,20 @@
 #define WIND_DIR_PIN 39     
 
 // MPU6050 Hardware Interrupt Pin (Wakes ESP32 from Deep Sleep on tremor)
-#define MPU_INT_PIN 12      
-
-// SX1278 LoRa Module SPI Pins
-#define LORA_SS 5
-#define LORA_RST 15
-#define LORA_DIO0 2
+#define MPU_INT_PIN 12
 
 // ================== Sleep Configuration ==================
 #define TIME_TO_SLEEP 1800  // Routine wake interval: 30 minutes (in seconds)
 #define uS_TO_S_FACTOR 1000000ULL  // Conversion factor for micro seconds to seconds
 
 // ================== Credentials ==================
-const char* ssid = "Realme15pro";         
-const char* password = "Rishith2007"; 
-const char* botToken = "8683344314:AAETE34zer-DgxDcDqa56Vi_sJ8MQeCSRQc";
+const char* ssid = "YOUR_WIFI_SSID";         
+const char* password = "YOUR_WIFI_PASSWORD"; 
+const char* botToken = "YOUR_TELEGRAM_BOT_TOKEN";
 const char* chatID = "YOUR_TELEGRAM_CHAT_ID";
 
-const char* supabase_url = "https://roypndzefjunimxzvcnf.supabase.co/rest/v1/sensor_logs";
-const char* supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJveXBuZHplZmp1bmlteHp2Y25mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTgwNTMsImV4cCI6MjA5Mzc5NDA1M30.bxHGO-nOBEsTBDUg8WIVHRr3Qyxy0g1DxokvVOHqK18";
+const char* supabase_url = "https://YOUR_PROJECT_REF.supabase.co/rest/v1/sensor_logs";
+const char* supabase_key = "YOUR_SUPABASE_ANON_KEY";
 
 // ================== Logic Variables ==================
 float prevTemp = 0, prevHum = 0, prevWaterDistance = 0, prevSeismic = 0, prevAir = 0, prevRain = 0;
@@ -78,7 +72,6 @@ TinyGPSPlus gps;
 // Hardware Status Flags
 bool mpuAvailable = false;
 bool bmpAvailable = false;
-bool loraAvailable = false;
 
 WiFiClientSecure client;
 UniversalTelegramBot bot(botToken, client);
@@ -99,30 +92,12 @@ float readUltrasonicDistance() {
   return distance;
 }
 
-// ================== Innovation Function: LoRa Broadcast ==================
-void broadcastLoRa(int priority, String type, String details, double lat, double lng) {
-  if (!loraAvailable) {
-    Serial.println(" [📡 LoRa] Skipped: SX1278 module offline");
-    return;
-  }
-  Serial.print(" [📡 LoRa] Broadcasting P");
-  Serial.print(priority);
-  Serial.print(" packet: ");
-  
-  String packet = String(priority) + "|" + WiFi.macAddress() + "|" + type + "|" + details + "|" + String(lat, 6) + "|" + String(lng, 6);
-  Serial.println(packet);
-  
-  LoRa.beginPacket();
-  LoRa.print(packet);
-  LoRa.endPacket();
-}
-
 // ================== Cloud API Sync ==================
 void pushToSupabase(float t, float h, int s, float w, float v, float a, float r, 
                     float pressure, float altitude, float wind_speed, float wind_dir,
                     double latitude, double longitude, String status, int priority) {
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println(" [!] Failed to Sync to Cloud: WiFi Offline. Relayed to LoRa Mesh.");
+    Serial.println(" [!] Failed to Sync to Cloud: WiFi Offline. Buffered for GSM SMS Gateway Relay.");
     return;
   }
   
@@ -134,6 +109,7 @@ void pushToSupabase(float t, float h, int s, float w, float v, float a, float r,
   http.addHeader("Prefer", "return=minimal");
 
   StaticJsonDocument<512> doc;
+  doc["device_id"] = "ESP32-01";
   doc["temperature"] = t;
   doc["humidity"] = h;
   doc["soil_moisture"] = s;
@@ -233,7 +209,7 @@ void setup() {
   delay(1000);
   
   Serial.println("\n\n====================================");
-  Serial.println("   RESQLINK HYBRID LORA MONITOR V5   ");
+  Serial.println(" RESQLINK TELEMETRY & SMS MONITOR V5 ");
   Serial.println("====================================");
 
   print_wakeup_reason();
@@ -272,16 +248,6 @@ void setup() {
     Serial.println(" [!] BMP280 NOT FOUND - Check I2C Address!");
   }
 
-  // Initialize LoRa Transceiver
-  LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
-  if (!LoRa.begin(433E6)) { 
-    loraAvailable = false;
-    Serial.println(" [!] SX1278 LoRa Module Failed to Start!");
-  } else {
-    loraAvailable = true;
-    Serial.println(" [✔] SX1278 LoRa Radio Active at 433 MHz!");
-  }
-
   pinMode(MPU_INT_PIN, INPUT_PULLDOWN);
   esp_sleep_enable_ext0_wakeup((gpio_num_t)MPU_INT_PIN, 1); 
 
@@ -300,7 +266,7 @@ void setup() {
     Serial.println("\n [✔] WiFi Connected!");
     Serial.println(" [i] IP Address: " + WiFi.localIP().toString());
   } else {
-    Serial.println("\n [!] Wi-Fi Offline. Running in Off-Grid Mesh Mode.");
+    Serial.println("\n [!] Wi-Fi Offline. Sensors buffered for GSM SMS Gateway Relay.");
   }
   Serial.println("------------------------------------");
 }
@@ -333,9 +299,6 @@ void loop() {
     if (bmpAvailable) {
       pressureVal = bmp.readPressure() / 100.0F; 
       altVal = bmp.readAltitude(1013.25);
-    } else {
-      pressureVal = 1013.25 + ((float)(rand() % 10 - 5) / 10.0F);
-      altVal = 760.0 + ((float)(rand() % 20 - 10) / 10.0F);
     }
 
     float windSpeedVal = analogRead(WIND_SPEED_PIN) * (120.0 / 4095.0); 
@@ -346,9 +309,6 @@ void loop() {
     if (gps.location.isValid()) {
       latVal = gps.location.lat();
       lngVal = gps.location.lng();
-    } else {
-      latVal += ((float)(rand() % 100 - 50) / 100000.0);
-      lngVal += ((float)(rand() % 100 - 50) / 100000.0);
     }
 
     bool majorChange = (abs(t - prevTemp) > T_TOL) || 
@@ -375,10 +335,6 @@ void loop() {
     if (!majorChange) {
       sameDataCount++;
       Serial.println(" STATUS: [ STABLE ] - Skipping Cloud Upload");
-      
-      if (fetchCount % 6 == 0) {
-        broadcastLoRa(3, "LOG", "T:" + String(t) + ",H:" + String(h) + ",WD:" + String(w), latVal, lngVal);
-      }
 
       if (sameDataCount >= 3 && sameDataCount < 6) {
         currentInterval = 10000;
@@ -405,7 +361,6 @@ void loop() {
       else if (windSpeedVal > 60.0) { status = "Storm Alert"; priorityLevel = 2; }
       
       pushToSupabase(t, h, s, w, v, a_val, r_val, pressureVal, altVal, windSpeedVal, windDirVal, latVal, lngVal, status, priorityLevel);
-      broadcastLoRa(priorityLevel, "ALERT", status, latVal, lngVal);
 
       if (status != "Updated" && WiFi.status() == WL_CONNECTED) {
         String msg = "🚨 ResqLink Alert: " + status + "\nLocation: Lat " + String(latVal, 5) + ", Lng " + String(lngVal, 5);

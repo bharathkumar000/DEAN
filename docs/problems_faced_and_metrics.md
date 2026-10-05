@@ -17,9 +17,9 @@ This document analyzes the engineering challenges resolved during development, a
   2. The target location where help is needed (the Incident location).
 - **Out-of-Region Triage**: If the publisher's location differs from the configured disaster area coordinates (e.g., further than the defined radius), the alert is routed to the **Other Locations (Pending Verification)** section. The administrator can verify the request before relocating it to the active rescue queue.
 
-### 1.3. P2P Mesh Collision & Message Deduplication
-- **Problem**: Bluetooth Low Energy (BLE) and Wi-Fi Direct ad-hoc networks continuously broadcast signals, causing severe packet duplication when multiple relay nodes overlap.
-- **Solution**: Implemented local UUID indexing in the Hive NoSQL store. Incoming packets are queried against active UUID logs. If a match is found, the packet is ignored, preventing duplicate processing and database bloat.
+### 1.3. GSM SMS Ingestion & Message Deduplication
+- **Problem**: When multiple distress SMS messages are sent during high network congestion, duplicate messages or repeated sends could overload the incident feed.
+- **Solution**: Implemented timestamp, sender phone number, and content fingerprint indexing. Incoming SMS requests from the Android forwarder bridge are queried against active incident logs. If a match within a 5-minute window is found, duplicate processing is prevented.
 
 ### 1.4. ESP32 Battery Drain vs. Real-Time Telemetry
 - **Problem**: Continuous sensor polling and cellular/Wi-Fi uploads drained the battery on remote ESP32 nodes within days.
@@ -39,8 +39,8 @@ The platform is designed around specific technical bounds to ensure reliability:
 | **Disaster Zone Radius** | $1.0 - 5.0 \, \text{km}$ | Configurable out-of-region validation limit |
 | **Active Telemetry Interval** | $5.0 \, \text{seconds}$ | Critical event tracking frequency |
 | **Idle Telemetry Interval** | $30.0 \, \text{seconds}$ | Idle power-saving frequency |
-| **SMS Gateway Destination** | `+91 XXXXXXXXXX` | Configured SMS portal recipient number |
+| **SMS Gateway Ingestion Latency** | $< 5.0 \, \text{seconds}$ | End-to-end time from victim SMS to Command Dashboard |
+| **SMS Carrier Compatibility** | $100\%$ (2G / 3G / 4G / 5G) | Operates on all GSM voice/signaling control channels |
 | **Maximum Local Cache** | $24.5 \, \text{MB}$ | Pre-cached offline sector maps storage size |
-| **Multi-hop Transmission Latency** | $< 10.0 \, \text{seconds}$ | Time to forward alert from victim to HQ over 3-hop mesh |
 | **GPS Coordinate Resolution** | $4 \, \text{decimal places}$ | Precise to within $\approx 11.1 \, \text{meters}$ |
-| **Ad-hoc Mesh Protocol Range** | $\approx 100 \, \text{meters}$ | Bluetooth/WiFi range per client node |
+| **SMS Coverage Range** | Entire Cellular Footprint | Any distance with at least 1 bar of 2G/3G/4G signal |

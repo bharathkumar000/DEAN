@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "name": "ESP32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/Users/bharathkumara/Library/Arduino15/packages/esp32/hardware/esp32/3.3.12/cores/esp32/**",
+        "/Users/bharathkumara/Library/Arduino15/packages/esp32/hardware/esp32/3.3.12/variants/esp32/**",
+        "/Users/bharathkumara/Library/Arduino15/packages/esp32/hardware/esp32/3.3.12/libraries/**",
+        "/Users/bharathkumara/Documents/Arduino/libraries/**"
+      ],
+      "defines": [
+        "ESP32",
+        "ARDUINO=10819",
+        "ARDUINO_ARCH_ESP32",
+        "ESP_PLATFORM"
+      ],
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-arm64"
+    }
+  ],
+  "version": 4
+}

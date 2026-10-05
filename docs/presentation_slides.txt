@@ -43,11 +43,11 @@ A three-column block layout illustrating the components of the ResQLink ecosyste
 
 [Slide Content]:
 * IoT Sensor Nodes: Low-power ESP32 stations monitoring hazards in the field.
-* Offline Mobile Mesh: P2P Bluetooth/WiFi multi-hop ad-hoc network for SOS alerts.
+* Off-Grid GSM SMS Gateway: Zero-internet emergency distress signaling from any 2G/3G/4G phone.
 * Web Command Dashboard: Next.js hub with AI triage and resource dispatching.
 
 [Presenter Notes]:
-"ResQLink addresses these challenges with a three-part ecosystem: low-cost IoT nodes that monitor conditions, an offline-capable mobile app that relays distress signals, and a centralized web dashboard to verify and manage response efforts."
+"ResQLink addresses these challenges with a three-part ecosystem: low-cost IoT nodes that monitor conditions, a zero-internet GSM SMS gateway that relays distress signals from any phone, and a centralized web dashboard to verify and manage response efforts."
 
 --------------------------------------------------------------------------------
 SLIDE 4: High-Level System Architecture
@@ -157,29 +157,29 @@ Mockups of the Flutter mobile app showing the login page, victim dashboard, and 
 SLIDE 11: P2P Multi-Hop Mobile Mesh Network
 --------------------------------------------------------------------------------
 [Visual Layout]:
-An animation or diagram showing how an alert hops from a victim's phone to a volunteer's phone, and finally to Command HQ.
+An animation or diagram showing how a distress SMS is sent from a victim's phone (without internet), captured by the Android forwarder, and ingested live into Command HQ.
 
 [Slide Content]:
-* Framework: Google Nearby Connections API utilizing Bluetooth and Wi-Fi Direct.
-* Mode: Strategy.P2P_CLUSTER for ad-hoc mesh networks.
-* Data Duplication: Local Hive boxes index unique UUIDs to prevent redundant transmissions.
+* Framework: GSM Signaling Control-Channel SMS Architecture.
+* Universal Access: Operates across 100% of mobile phones (smartphones & 2G keypad devices).
+* Realtime Ingestion: Structured SMS alerts auto-populate the Command Dashboard in < 5 seconds.
 
 [Presenter Notes]:
-"The app uses Google Nearby Connections to build ad-hoc mesh networks over Bluetooth and Wi-Fi. Alerts hop from device to device until they reach a node with internet access."
+"When power grids and mobile internet fail, standard cellular voice and SMS control channels remain alive. ResQLink leverages this to allow any citizen to send structured SOS reports without an app or data plan."
 
 --------------------------------------------------------------------------------
-SLIDE 12: Legacy SMS MethodChannel Integration
+SLIDE 12: Automated GSM SMS Forwarder Bridge
 --------------------------------------------------------------------------------
 [Visual Layout]:
-Screenshot of the SMS portal UI in the mobile app, alongside a diagram showing the MethodChannel bridge to the Android OS.
+Screenshot of the SMS forwarder gateway and the live SMS emergency requests table inside the Web Command Dashboard.
 
 [Slide Content]:
-* Direct Gateway: Rebuilt SMS portal targeting the emergency number +91 XXXXXXXXXX.
-* Native Bridge: Flutter MethodChannel (`com.resqlink.sms`) triggers Android intents.
-* Preset Templates: Features quick-select messages for medical, evacuation, and supply needs.
+* Dedicated Gateway: Centralized GSM forwarder unit stationed at Command HQ.
+* Zero Packet Loss: Google Sheets and Supabase cloud ingestion bridge.
+* Structured Parsing: Automated extraction of location, severity, and requested resources.
 
 [Presenter Notes]:
-"When mesh connections aren't available but legacy cellular service is, users can send alerts through the app's built-in SMS portal. It uses a MethodChannel to pre-fill templates and target the emergency response gateway."
+"Incoming distress SMS messages hit our forwarder gateway, which parses the message content and maps the emergency directly into the tactical command center in real time."
 
 --------------------------------------------------------------------------------
 SLIDE 13: Hardware Tier (ESP32 Sensor Stations)
@@ -188,7 +188,7 @@ SLIDE 13: Hardware Tier (ESP32 Sensor Stations)
 Photo of the physical ESP32 sensor station prototype, listing its weather-resistant enclosure and solar power setup.
 
 [Slide Content]:
-* Core MCU: ESP32 DevKit V1 with built-in Wi-Fi and Bluetooth.
+* Core MCU: ESP32 DevKit V1 with high-efficiency sensor orchestration.
 * Deployment: Designed for solar-powered operation in remote areas.
 * Data Transmission: Uploads data via HTTP REST to Supabase, with Telegram fallback.
 
@@ -291,9 +291,9 @@ SLIDE 20: Future Scope & Conclusion
 A summary slide with icons for solar power, satellite links, and mobile deployments.
 
 [Slide Content]:
-* Hardware Expansion: Integrate solar-powered LoRa transceivers for long-range mesh routing.
-* UI Enhancements: Add detailed offline routing maps and additional language translations.
-* Summary: ResQLink provides a reliable, multi-tier communication framework to support emergency personnel during disaster events.
+* Network Expansion: Multi-carrier redundant SMS gateways and direct-to-cell satellite integration.
+* UI Enhancements: Add detailed offline routing maps and additional regional language translations.
+* Summary: ResQLink provides a reliable, universally accessible communication framework to support emergency personnel during disaster events.
 
 [Presenter Notes]:
-"In conclusion, ResQLink offers a modular, resilient communication system for disaster zones. Moving forward, we plan to integrate LoRa transceivers to extend our range and add more local languages to our UI. Thank you."
+"In conclusion, ResQLink offers a universal, resilient communication system for disaster zones powered by zero-internet GSM SMS. Moving forward, we plan to integrate direct-to-cell satellite links and expand our regional language support. Thank you."

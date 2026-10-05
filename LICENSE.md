@@ -79,7 +79,7 @@ By purchasing, downloading, or using this repository, the Licensee confirms havi
 | :--- | :--- |
 | **Project Name** | ResQLink — Disaster Response Platform |
 | **Licensor (Original Author)** | Bharath Kumara (`Original Developer & Author`) |
-| **Licensee (Purchaser / Student)** | `[Insert Buyer / Student Full Name]` |
-| **Permitted Academic Institution** | `[Insert College / University Name]` |
-| **Purpose of License** | Final-Year Project Demonstration & Evaluation Only |
-| **Date of License Grant** | `[Insert Date: YYYY-MM-DD]` |
+| **Licensee (Student / Presenter)** | **Zaid Hussain** |
+| **University Seat Number (USN)** | **4SF23CS250** |
+| **Purpose of License** | Final-Year Project Demonstration, Evaluation & Viva-Voce Only |
+| **Status of License** | Active & Authorized |

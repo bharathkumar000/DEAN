@@ -53,19 +53,20 @@ delegate rescue teams.
     into the map UI.
 
 --------------------------------------------------------------------------------
-2. 📱 MOBILE CLIENT (Flutter App)
+2. 📱 MOBILE EMERGENCY REPORTING & SMS GATEWAY
 --------------------------------------------------------------------------------
-The field application used by citizens and rescue groups. Operates without 
-cellular coverage using peer-to-peer networks.
+The emergency communication pipeline used by citizens and rescue groups. Operates 
+even without internet/data coverage using cellular GSM SMS signaling channels.
 
-* Flutter SDK (3.x) & Dart (3.x)
-  - Function: Cross-platform engine. Compiles code to high-speed native 
-    assembler code (ARM64) for mobile devices.
+* GSM SMS Control-Channel Communication
+  - Function: Universal distress signaling. Enables real-time emergency disaster 
+    reporting from any mobile phone (even basic 2G feature phones without data access)
+    directly into the ResQLink Command Dashboard.
+  - Zero Internet Requirement: Operates on standard GSM control channels.
 
-* Google Nearby Connections (v4.3.0)
-  - Function: Offline ad-hoc mesh. Utilizes Bluetooth Low Energy (BLE) for 
-    discovery and Wi-Fi Direct/Hotspots to transmit SOS packets locally.
-  - Strategy: P2P_CLUSTER.
+* Android SMS Forwarder Bridge
+  - Function: Dedicated gateway receiver running an automated background forwarder 
+    service that ingests incoming distress SMS messages and updates the cloud sheets / API.
 
 * Hive NoSQL DB (v2.2.3)
   - Function: Lightweight offline persistence. Caches SOS requests, volunteer 
@@ -89,8 +90,7 @@ cellular coverage using peer-to-peer networks.
 
 * Kotlin (Android Native Core)
   - Function: Rebuilt SMS Portal integration. Launches a background Android 
-    Intent targeting pre-defined emergency gate numbers (+91 XXXXXXXXXX) with 
-    automated emergency templates.
+    Intent targeting pre-defined emergency gate numbers with automated emergency templates.
 
 --------------------------------------------------------------------------------
 3. 🔌 IoT SENSOR STATIONS (ESP32 Firmware)
@@ -99,8 +99,8 @@ Hardware nodes deployed in active disaster areas to detect structural tremors,
 rising water levels, and rainfall parameters.
 
 * ESP32 DevKit V1 (Tensilica Xtensa Dual-Core CPU)
-  - Function: Processing and communications core. Manages Wi-Fi/Bluetooth 
-    handshakes and ADC sensor polling.
+  - Function: Processing and communications core. Manages Wi-Fi uplink, deep sleep 
+    power throttling, and multi-sensor ADC polling.
 
 * Arduino C++ Core
   - Function: Firmware compiler environment. Handles hardware interrupts, I2C 

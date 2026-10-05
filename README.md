@@ -9,12 +9,14 @@ ResQLink is a disaster response system that combines a real-time admin web dashb
 ```
 RESQLINK/
 ├── web/          # Next.js admin dashboard (disaster command centre)
-├── hardware/     # ESP32 firmware (BLE/WiFi mesh sensor nodes)
-├── docs/         # Project documentation & architecture files
+├── hardware/     # ESP32 firmware & physical schematics
+├── docs/         # Unified documentation, schemas, and architecture guides
 │   ├── RESQLINK.pdf
+│   ├── SMS_SETUP.md
+│   ├── SUPABASE.md
+│   ├── supabase_schema.sql
 │   ├── system_architecture.md
 │   └── tech_stack.txt
-├── SMS_SETUP.md  # Off-Grid SMS Gateway & Forwarder setup guide
 ├── LICENSE.md    # Academic Presentation & Limited Use License
 └── README.md     # Main overview file
 ```
@@ -27,10 +29,11 @@ A Next.js web application providing the disaster command centre interface for ad
 
 **Key features:**
 - Live SOS/rescue request feed with GPS location
+- Real-time GSM SMS emergency ingestion from any 2G/3G/4G phone
 - Out-of-region verification workflow
 - AI triage & resource dispatch
 - Leaflet map with flood zone overlay
-- Offline mesh telemetry display
+- Live IoT environmental telemetry display
 
 **Setup:**
 ```bash
@@ -58,12 +61,12 @@ npm start
 
 ## ⚙️ Hardware — ESP32 Firmware (`hardware/`)
 
-C++ firmware for ESP32 nodes that act as BLE/WiFi mesh relay points and environmental sensors deployed in disaster-affected zones.
+C++ firmware for ESP32 nodes that act as environmental sensors deployed in disaster-affected zones.
 
 **Key features:**
-- BLE mesh broadcasting of SOS signals
-- WiFi bridge mode for internet uplink
-- Environmental sensor integration (temperature, flood depth)
+- Real-time multi-sensor telemetry (temperature, humidity, flood depth, seismic tremors, air quality)
+- Cloud and GSM SMS Gateway uplink
+- Dynamic power throttling algorithm (5s active to 30s idle)
 
 **Files:**
 | File | Description |
@@ -71,8 +74,7 @@ C++ firmware for ESP32 nodes that act as BLE/WiFi mesh relay points and environm
 | `espcode.c++` | Main firmware source code |
 | `esp32_circuit_diagram.jpg` | Hardware wiring schematic |
 | `firmware_flow_chart.jpg` | Firmware execution flow |
-| `deployment_guide.txt` | Field deployment instructions |
-| `system_architecture.md` | Firmware architecture notes |
+| `README.md` | Hardware specs & sensor wiring notes |
 
 **Flash firmware:**
 ```bash
@@ -86,9 +88,9 @@ C++ firmware for ESP32 nodes that act as BLE/WiFi mesh relay points and environm
 
 ```bash
 # 1. Start the web dashboard
-cd web && npm install && npm run dev
+npm run dev                  # runs on http://localhost:3000
 
-# 2. Flash firmware to ESP32 nodes (see hardware/deployment_guide.txt)
+# 2. Flash firmware to ESP32 nodes (see docs/deployment_guide.txt)
 ```
 
 ---

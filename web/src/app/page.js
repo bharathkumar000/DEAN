@@ -735,8 +735,10 @@ export default function Home() {
         const configResponse = await fetch('/api/config');
         const config = await configResponse.json();
         
-        const rawUrl = config.SUPABASE_URL || "https://roypndzefjunimxzvcnf.supabase.co";
-        const key = config.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJveXBuZHplZmp1bmlteHp2Y25mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMTgwNTMsImV4cCI6MjA5Mzc5NDA1M30.bxHGO-nOBEsTBDUg8WIVHRr3Qyxy0g1DxokvVOHqK18";
+        const rawUrl = config.SUPABASE_URL || "";
+        const key = config.SUPABASE_ANON_KEY || "";
+        
+        if (!rawUrl || !key) return;
         
         const supabaseUrl = `${rawUrl.replace(/\/$/, '')}/rest/v1/sensor_logs?select=*&order=created_at.desc&limit=1`;
 
@@ -1345,7 +1347,7 @@ export default function Home() {
           const data = await res.json();
           setBroadcasts(data);
         }
-        showToast("Emergency Broadcast sent to mesh network successfully!", "success");
+        showToast("Emergency Broadcast sent via SMS gateway successfully!", "success");
       }
     } catch (err) {
       console.error("Failed to send broadcast:", err);
@@ -1727,23 +1729,25 @@ export default function Home() {
 
       setRequests(prev => [newRequest, ...prev]);
 
-      // Telegram Message Dispatcher
-      const botToken = "8683344314:AAETE34zer-DgxDcDqa56Vi_sJ8MQeCSRQc";
-      const chatID = "YOUR_TELEGRAM_CHAT_ID";
+      // Telegram Message Dispatcher (optional)
+      const botToken = config.TELEGRAM_BOT_TOKEN || "";
+      const chatID = config.TELEGRAM_CHAT_ID || "";
       const msg = `🚨 *CRITICAL SOS ALERT*\n\nUser: ${newRequest.contactPerson}\nLocation: https://www.google.com/maps?q=${lat},${lng}\nStatus: IMMEDIATE RESPONSE REQUIRED`;
 
-      try {
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatID,
-            text: msg,
-            parse_mode: 'Markdown'
-          })
-        });
-      } catch (err) {
-        console.error("Telegram API connection failed:", err);
+      if (botToken && chatID && chatID !== "YOUR_TELEGRAM_CHAT_ID") {
+        try {
+          await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatID,
+              text: msg,
+              parse_mode: 'Markdown'
+            })
+          });
+        } catch (err) {
+          console.error("Telegram API connection failed:", err);
+        }
       }
 
       showToast("🚨 SOS EMERGENCY BROADCAST SUCCESSFUL! Operational units briefed. Stay in your current location if safe.", 'success');
@@ -2718,7 +2722,7 @@ export default function Home() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '15px' }}>
                     <textarea 
                       className="form-control"
-                      placeholder="Enter emergency warning to broadcast back to offline mobile mesh..."
+                      placeholder="Enter emergency warning to broadcast via GSM SMS Gateway..."
                       value={newBroadcastMsg}
                       onChange={(e) => setNewBroadcastMsg(e.target.value)}
                       style={{ width: '100%', minHeight: '60px', padding: '10px', fontSize: '12.5px', borderRadius: '8px', border: '1px solid var(--color-border)' }}
@@ -2755,7 +2759,7 @@ export default function Home() {
                       onClick={handleSendEmergencyBroadcast}
                       style={{ padding: '8px', fontSize: '13px', fontWeight: 'bold' }}
                     >
-                      <i className="fas fa-broadcast-tower"></i> Broadcast to Mesh Nodes
+                      <i className="fas fa-sms"></i> Broadcast via SMS Gateway
                     </button>
 
                     {/* Broadcast history list */}

@@ -1,67 +1,69 @@
 # =============================================================
-# RESQLINK — Monorepo .gitignore
+# DEAN / RESQLINK — Project .gitignore
 # =============================================================
 
-# --- Web (Next.js) ---
+# --- Dependencies & Node Modules ---
+node_modules/
 web/node_modules/
+.pnp
+.pnp.js
+
+# --- Next.js Build Output ---
+.next/
 web/.next/
+out/
 web/out/
+build/
 web/build/
-web/.env*
-!web/.env.example
-web/coverage/
-web/.pnp
-web/.pnp.*
-web/.yarn/*
-!web/.yarn/patches
-!web/.yarn/plugins
-!web/.yarn/releases
-!web/.yarn/versions
+dist/
+*.tsbuildinfo
+next-env.d.ts
 
-# --- Mobile (Flutter) ---
-mobile/.dart_tool/
-mobile/.flutter-plugins
-mobile/.flutter-plugins-dependencies
-mobile/.packages
-mobile/build/
-mobile/.idea/
-mobile/*.iml
-mobile/android/.gradle/
-mobile/android/local.properties
-mobile/android/key.properties
-mobile/android/app/google-services.json
-mobile/ios/Pods/
-mobile/ios/.symlinks/
-mobile/ios/Flutter/Flutter.framework
-mobile/ios/Flutter/Flutter.podspec
-mobile/ios/Runner/GeneratedPluginRegistrant.*
-mobile/.metadata
+# --- Environment Variables & Secrets ---
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+web/.env
+web/.env*.local
+!**/.env.example
 
-# --- Hardware (ESP32 firmware) ---
-hardware/*.o
-hardware/*.elf
-hardware/*.hex
-hardware/.pio/
-
-# --- Releases ---
-# Keep APK files tracked (they are distributable builds)
-# releases/*.apk
-
-# --- Global ---
-.DS_Store
-*.pem
+# --- Logs & Debug Output ---
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-*.tsbuildinfo
-next-env.d.ts
-.vercel
+pnpm-debug.log*
+.turbo
+
+# --- Hardware / Embedded Compilation (Arduino & PlatformIO) ---
+hardware/*.o
+hardware/*.elf
+hardware/*.hex
+hardware/*.bin
+hardware/.pio/
+hardware/.vscode/
+.pio/
+
+# --- Operating System Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# --- Root-level env (legacy — moved to web/) ---
-/.env*
-!**/.env.example
-node_modules
-.next/
+# --- IDE & Editor Cache ---
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/c_cpp_properties.json
+.clangd
+
+# --- Vercel Deployment Cache ---
+.vercel
